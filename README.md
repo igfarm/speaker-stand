@@ -2,7 +2,7 @@
 
 OpenSCAD file to create tripod speaker stand using PCV pipe and 3D printed parts.
 
-![Tripod Stand](./assets/tripod.png | width=100)
+<img src="./assets/tripod.png" width="400">
 
 Spikes are threaded with M4
 
@@ -47,14 +47,14 @@ show_guide = false;
 
 Top Part
 
-![Top](./assets/part1.png)
+<img src="./assets/part1.png" width="400">
 
 Bottom Part
 
-![Bottom](./assets/part2.png)
+<img src="./assets/part2.png" width="400">
 
 ## Development
 
 First prototype
 
-![First Prototype](./assets/prototype1.png)
+<img src="./assets/prototype1.png" width="400">
