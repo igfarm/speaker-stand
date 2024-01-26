@@ -22,13 +22,16 @@ spike_length = 27;
 sphere_diameter = 0.75 * inch;
 
 // Flags to show different things
-show_low_part = true;
-show_hi_part = false;
-show_spike = false ;
-show_top = false;
-show_inner = true;
+show_low_part = false;
+show_hi_part = true;
 
-use_thread = show_low_part || show_hi_part;
+show_part = false;
+part = "hi"; // Values are hi and low
+
+show_spike = true ;
+show_top = true;
+show_inner = false;
+
 show_guide = false;
 
 taper_length = inch;
@@ -60,14 +63,14 @@ th = base_width * sqrt(3) / 2;
 
 module my_thread(type, diameter, pitch , length ) {
     if (type == "metric") {
-        if(use_thread)
+        if(show_part)
             metric_thread(diameter, pitch, length);
         else 
             translate([0,0,-1])
                 cylinder(length+1, diameter/2, diameter/2);
     } 
     if (type == "english") {
-        if(use_thread)
+        if(show_part)
             english_thread(diameter, pitch, length);
         else 
             translate([0,0,-1])
@@ -106,13 +109,14 @@ module leg() {
                 }
 
                 // Spike
-                if (show_spike) color("red") {
-                    translate([0,0,0])
-                        cylinder(spike_length, 0, spike_diam/2);
+                if (show_spike && !show_part) 
+                    color("red") {
+                        translate([0,0,0])
+                            cylinder(spike_length, 0, spike_diam/2);
 
-                    translate([0,0,leg_length-sphere_diameter/2])
-                        sphere(d=sphere_diameter);
-                    }
+                        translate([0,0,leg_length-sphere_diameter/2])
+                            sphere(d=sphere_diameter);
+                        }
             }
 
             // Make a place for sphere to rest
@@ -120,7 +124,7 @@ module leg() {
                 sphere(d=sphere_diameter);
 
             // Expose inner tube
-            if (show_inner || show_low_part || show_hi_part)
+            if (show_inner || show_part)
                 translate([0, 0, truss_odiam  + low_truss_height]) 
                     difference() {
                         cylinder(leg_tube_length, leg_odiam/2 + 1, leg_odiam/2 + 1);
@@ -139,7 +143,7 @@ module truss_with_sleeve(truss_length) {
         // The truss
         difference() {
             cylinder(truss_length, truss_odiam/2, truss_odiam/2);
-            if (show_inner || show_low_part || show_hi_part)
+            if (show_inner || show_part)
                 translate([0, 0, truss_idiam * 2])
                     difference() {
                         cylinder(truss_tube_length, truss_odiam/2 + 2, truss_odiam/2 + 2);
@@ -211,21 +215,21 @@ union() {
 
         }
 
-        if (show_low_part) {
+        if (show_part && part == "low") {
                 translate([-100,-400, low_truss_height + 2.5 * inch])   
                     cube([800,800,1500]);
 
                 translate([70,-400, -10])   
                     cube([800, 800,200]); 
         }
-        if (show_hi_part) {
+        if (show_part && part == "hi") {
                translate([-100,-400, -inch * 4])   
                    cube([800,800,alt_stand_height]);
         }
     }
 }
 
-if (show_top)
+if (show_top && !show_part)
     color("red")
         translate([base_diamater/2,0, alt_stand_height + 0.75 * inch/2])
         rotate([0,0,240])

@@ -4,7 +4,7 @@ OpenSCAD file to create tripod speaker stand using PCV pipe and 3D printed parts
 
 <img src="./assets/tripod.png" width="400">
 
-Spikes are threaded with M4
+The speaker plate is screwed into the top. Spikes are threaded to hte bottom.
 
 ## OpenSCAD File
 
@@ -19,18 +19,20 @@ OpenSCAD file is provided and can be modified to adjust the height and with of t
 - `truss_odiam`: Outside diamater of truss PVC pipe
 - `truss_idiam`: Inside diamater of truss PVC pipe
 
+You can modify the parameters ro create a stand that fits your needs.
+
 ## Generating 3D printed parts
 
-```
-// Flags to show different things
-show_part1 = true;
-show_part2 = false;
-show_spike = false ;
-show_top = false;
-show_inner = true;
-use_thread = false;
-show_guide = false;
-```
+You need to set one of the following flags to generate pritable 3D parts.
+
+- `show_part`: set to true if you want to generate one of the parts
+- `part`: part to show, values are "hi" and "low"
+
+Parts can be printed on a Prusa Mini printer.
+
+- `show_spike`: show the spikes and the top balls
+- `show_top`: show the top plate
+- `show_inner`: show the inner diamater PVC pipe
 
 ## Materials
 
