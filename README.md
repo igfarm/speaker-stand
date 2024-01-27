@@ -21,6 +21,8 @@ OpenSCAD file is provided and can be modified to adjust the height and with of t
 
 You can modify the parameters ro create a stand that fits your needs.
 
+**Note:** You will need the BOSL2 library installed to generate the threads. See https://github.com/BelfrySCAD/BOSL2 for installation notes.
+
 ## Generating 3D printed parts
 
 You need to set one of the following flags to generate pritable 3D parts.
