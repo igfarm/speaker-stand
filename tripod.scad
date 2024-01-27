@@ -8,11 +8,12 @@ base_width = 13 * INCH;
 top_width = 6 * INCH;
 top_height = 0.75 * INCH;
 
+//
 // https://pvcfittingstore.com/pages/pvc-pipe-sizes-and-dimensions
-// Schedule 40 PVC
-leg_odiam = 1.315 * INCH;// FORMUFIT 1-1/4" Size Furniture Grade PVC Pipe
+//
+leg_odiam = 1.315 * INCH;// FORMUFIT 1" Size Furniture Grade PVC Pipe
 leg_idiam = 1.049 * INCH;
-truss_odiam = 1.050 * INCH;// FORMUFIT 3/4 in. Furniture Grade PVC pipe
+truss_odiam = 1.050 * INCH;// FORMUFIT 3/4" Furniture Grade PVC pipe
 truss_idiam = 0.824 * INCH;
 
 // Adornments
@@ -35,10 +36,13 @@ taper_length = INCH;
 // Calculated values
 alt_stand_height = stand_height - top_height;
 
-
 // Where the trusses live
 low_truss_height = INCH * 2.5;
 hi_truss_height = alt_stand_height - 1.5 * INCH;
+
+// Oversize thread diamater adjusment. 
+// This value works using Prusa Mini+ using PLA
+thread_ajsument = 0.3;
 
 base_diamater = base_width / sqrt(3) * 2;
 base_radius = base_diamater / 2;
@@ -57,22 +61,23 @@ leg_angle = atan((base_radius - top_radius) / alt_stand_height);
 
 th = base_width * sqrt(3) / 2;
 
-
 module my_thread(diameter, pitch, length) {
   if (show_part)
     translate([0, 0, length / 2])
-      threaded_rod(d = diameter, height = length, pitch = pitch, $fa = 0.5, $fs = 0.5, internal = true);
+      threaded_rod(d = diameter + thread_ajsument, height = length, pitch = pitch, $fa = 0.5, $fs = 0.5, internal = true);
   else
     translate([0, 0, -1])
       cylinder(length + 1, diameter / 2, diameter / 2);
 }
 
-module leg() {
+module leg(show_length = false) {
   hi_taper_line = spike_length + taper_length;
 
   leg_tube_length = (hi_truss_height - low_truss_height) / cos(leg_angle) - truss_odiam * 2;
-  echo("leg tube length");
-  echo(leg_tube_length);
+  if (show_length) {
+    echo("leg tube length");
+    echo(leg_tube_length);
+  }
 
   union() {
     rotate([0, leg_angle, 0]) {
@@ -130,10 +135,12 @@ module leg() {
   }
 }
 
-module truss_with_sleeve(truss_length) {
+module truss_with_sleeve(truss_length, show_length = false) {
   truss_tube_length = low_truss_length - truss_idiam * 4;
-  echo("low truss tube length");
-  echo(truss_tube_length);
+  if (show_length) {
+    echo("low truss tube length");
+    echo(truss_tube_length);
+  }
 
   union() {
     // The truss
@@ -187,7 +194,7 @@ module low_truss() {
         union() {
           rotate([90, 0, 0])
             translate([0, 0, -low_truss_length / 2]) {
-              truss_with_sleeve(low_truss_length);
+              truss_with_sleeve(low_truss_length, show_length = true);
             }
           translate([0, -low_truss_length / 2, 0])
             rotate([90, 0, -60])
@@ -206,7 +213,7 @@ union() {
   difference() {
     union() {
       // Legs
-      leg();
+      leg(show_length = true);
       translate([th, -base_width / 2, 0])
         rotate([0, 0, 120])
           leg();
