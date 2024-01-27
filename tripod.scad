@@ -75,51 +75,53 @@ module leg() {
     echo(leg_tube_length); 
 
     union() {
-        rotate([0,leg_angle,0])
+        rotate([0,leg_angle,0])  {
+            // The leg
+            difference() {
+                union () {
+                    // Leg
+                    translate([0,0,hi_taper_line])
+                        cylinder(leg_length-hi_taper_line-taper_length-sphere_diameter/2, leg_odiam/2, leg_odiam/2);
 
-        // The leg
-        difference() {
-            union () {
+                    // Top taper
+                    translate([0,0,leg_length-taper_length - sphere_diameter/2])
+                        cylinder(taper_length, leg_odiam/2, spike_diam/2 * 1.5);
 
-                // Leg
-                translate([0,0,hi_taper_line])
-                    cylinder(leg_length-hi_taper_line-taper_length-sphere_diameter/2, leg_odiam/2, leg_odiam/2);
-
-                // Top taper
-                translate([0,0,leg_length-taper_length - sphere_diameter/2])
-                    cylinder(taper_length, leg_odiam/2, spike_diam/2 * 1.5);
-
-                // Bottom taper
-                translate([0,0,spike_length]) {
-                    difference () {
-                        cylinder(taper_length, spike_diam/2 * 1.5, leg_odiam/2);
-                        my_thread(diameter=6, pitch=1.25, length=15);
+                    // Bottom taper
+                    translate([0,0,spike_length]) {
+                        difference () {
+                            cylinder(taper_length, spike_diam/2 * 1.5, leg_odiam/2);
+                            my_thread(diameter=6, pitch=1.25, length=15);
+                        }
                     }
+
                 }
 
-                // Spike
-                if (show_spike && !show_part) 
-                    color("red") {
-                        translate([0,0,0])
-                            cylinder(spike_length, 0, spike_diam/2);
+                // Make a place for sphere to rest
+                translate([0,0,leg_length-sphere_diameter/2])
+                    sphere(d=sphere_diameter);
 
-                        translate([0,0,leg_length-sphere_diameter/2])
-                            sphere(d=sphere_diameter);
+                // Expose inner tube
+                if (show_inner || show_part)
+                    translate([0, 0, truss_odiam  + low_truss_height]) 
+                        difference() {
+                            cylinder(leg_tube_length, leg_odiam/2 + 1, leg_odiam/2 + 1);
+                            cylinder(leg_tube_length, leg_idiam/2, leg_idiam/2);
                         }
             }
 
-            // Make a place for sphere to rest
-            translate([0,0,leg_length-sphere_diameter/2])
-                sphere(d=sphere_diameter);
+            // Spike
+            if (show_spike && !show_part) 
+                color("red") {
+                    translate([0,0,0])
+                        cylinder(spike_length, 0, spike_diam/2);
 
-            // Expose inner tube
-            if (show_inner || show_part)
-                translate([0, 0, truss_odiam  + low_truss_height]) 
-                    difference() {
-                        cylinder(leg_tube_length, leg_odiam/2 + 1, leg_odiam/2 + 1);
-                        cylinder(leg_tube_length, leg_idiam/2, leg_idiam/2);
+                    translate([0,0,leg_length-sphere_diameter/2])
+                        sphere(d=sphere_diameter);
                     }
+
         }
+
     }
 }
 
