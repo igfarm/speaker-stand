@@ -59,6 +59,12 @@ Bottom Part
 
 ## Development
 
-First prototype
+### First prototype
 
 <img src="./assets/prototype1.png" width="400">
+
+Uses old PVC pipes I had on the garage.
+
+### Second prototype
+
+Waiting for parts...
