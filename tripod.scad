@@ -44,6 +44,7 @@ base_diamater = base_width / sqrt(3) * 2;
 base_radius = base_diamater/2;
 top_diameter = top_width / sqrt(3) * 2 - leg_odiam;
 top_radius = top_diameter/2;
+top_offset = (sqrt(3)-1) * top_width/2 - top_radius;
 
 hi_truss_radius = hi_truss_height * (top_radius - base_radius) / alt_stand_height + base_radius;
 hi_truss_length = hi_truss_radius * sqrt(3);
@@ -155,12 +156,13 @@ module hi_truss() {
                 }
 
     // Tube to connect to top plate
-    translate([base_radius,0,hi_truss_height]) {
-        difference() {
-            alt_len = alt_stand_height - hi_truss_height - 0.125 * INCH;
-            cylinder(alt_len, truss_odiam/3, truss_odiam/3);
-            my_thread(diameter=1/4 * INCH, pitch=1/20 * INCH , length=alt_len );
-        }
+    translate([base_radius,0,hi_truss_height])
+        rotate([0,0,60]) translate([-top_offset,0,0]) {
+            difference() {
+                alt_len = alt_stand_height - hi_truss_height - 0.125 * INCH;
+                cylinder(alt_len, truss_odiam/3, truss_odiam/3);
+                my_thread(diameter=1/4 * INCH, pitch=1/20 * INCH , length=alt_len );
+            }
     }
 }
 
@@ -222,7 +224,8 @@ if (show_top && !show_part)
     color("red")
         translate([base_diamater/2,0, alt_stand_height + 0.75 * INCH/2])
         rotate([0,0,240])
-            cube([top_width,top_width, top_height], center=true);
+            translate([top_offset, 0, 0])
+                cube([top_width,top_width, top_height], center=true);
 
 if (show_guide) 
     color("red") {
