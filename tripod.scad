@@ -1,9 +1,10 @@
 $fn = 72;
 include <BOSL2/std.scad>
 include <BOSL2/threading.scad>
+include <BOSL2/screws.scad>
 
 // Basic stats
-stand_height = 28 * INCH;
+stand_height = 20 * INCH;
 base_width = 13 * INCH;
 top_width = 6 * INCH;
 top_height = 0.75 * INCH;
@@ -20,6 +21,7 @@ truss_idiam = 0.824 * INCH;
 spike_diam = 16;
 spike_length = 27;
 sphere_diameter = 0.75 * INCH;
+top_angle = 10;
 
 // Flags to show different things
 show_part = false;
@@ -46,7 +48,7 @@ thread_ajsument = 0.3;
 
 base_diamater = base_width / sqrt(3) * 2;
 base_radius = base_diamater / 2;
-top_diameter = top_width / sqrt(3) * 2 - leg_odiam;
+top_diameter = top_width / sqrt(3) * 2 - leg_odiam * 2;
 top_radius = top_diameter / 2;
 top_offset = (sqrt(3) - 1) * top_width / 2 - top_radius;
 
@@ -96,10 +98,9 @@ module leg(show_length = false) {
           translate([0, 0, spike_length]) {
             difference() {
               cylinder(taper_length, spike_diam / 2 * 1.5, leg_odiam / 2);
-              my_thread(diameter = 6, pitch = 1.25, length = 15);
+              my_thread(diameter = 6, pitch = 1, length = 15);
             }
           }
-
         }
 
         // Make a place for sphere to rest
@@ -207,8 +208,6 @@ module low_truss() {
         }
 }
 
-
-
 union() {
   difference() {
     union() {
@@ -247,7 +246,30 @@ if (show_top && !show_part)
     translate([base_diamater / 2, 0, alt_stand_height + 0.75 * INCH / 2])
       rotate([0, 0, 240])
         translate([top_offset, 0, 0])
-          cube([top_width, top_width, top_height], center = true);
+          difference() {
+            cube([top_width, top_width, top_height], center = true);
+            translate([0, top_width/2+4, 0]) {
+                  rotate([-top_angle,0,0])
+                    cube([top_width, top_height, 2*top_height],center=true);
+                }
+            translate([0, -top_width/2-4, 0]) {
+                  rotate([top_angle,0,0])
+                    cube([top_width, top_height, 2*top_height],center=true);
+                }
+            translate([-top_width/2-4, 0, 0]) {
+                  rotate([-top_angle,0,90])
+                    cube([top_width, top_height, 2*top_height],center=true);
+                }
+            translate([top_width/2-4, 0, 0]) {
+                  rotate([top_angle,0,90])
+                    cube([top_width, top_height, 2*top_height],center=true);
+                }
+            translate([0, 0, -top_height/2]) 
+               cylinder(top_height*2, INCH/8+0.2, INCH/8+0.2);
+            
+               translate([0, 0, 3])
+                 cylinder(INCH, 15, 15);
+          }
 
 if (show_guide)
   color("grey") {
