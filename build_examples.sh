@@ -29,30 +29,30 @@ do
     else
         # There are changes, generate files again
         $OPENSCAD -o tripod.stl \
-        -D 'stand_height='${HEIGHT_MM} \
-        $INFILE 2> tube_sizes.txt
+            -D 'stand_height='${HEIGHT_MM} \
+            $INFILE 2> tube_sizes.txt
 
         $OPENSCAD -o tripod.png \
-        -D 'stand_height='${HEIGHT_MM} \
-        $INFILE
+            -D 'stand_height='${HEIGHT_MM} \
+            $INFILE
 
         $OPENSCAD -o $ODIR/tripod-hi.stl \
-        -D 'stand_height='${HEIGHT_MM} \
-        -D 'show_part=true' \
-        -D 'part="hi"'  \
-        $INFILE 
+            -D 'stand_height='${HEIGHT_MM} \
+            -D 'show_part=true' \
+            -D 'part="hi"'  \
+            $INFILE 
 
         $OPENSCAD -o $ODIR/tripod-low.stl \
         -D 'stand_height='${HEIGHT_MM} \
-        -D 'show_part=true' \
-        -D 'part="low"'  \
-        $INFILE
+            -D 'show_part=true' \
+            -D 'part="low"'  \
+            $INFILE
 
         $OPENSCAD -o $ODIR/tripod-platform.stl \
-        -D 'stand_height='${HEIGHT_MM} \
-        -D 'show_part=true' \
-        -D 'part="platform"'  \
-        $INFILE
+            -D 'stand_height='${HEIGHT_MM} \
+            -D 'show_part=true' \
+            -D 'part="platform"'  \
+            $INFILE
     fi
     rm -rf tmp
     popd

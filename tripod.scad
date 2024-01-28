@@ -29,10 +29,11 @@ platform_angle = 10;
 //
 // https://pvcfittingstore.com/pages/pvc-pipe-sizes-and-dimensions
 //
-leg_odiam = 1.315 * INCH;// FORMUFIT 1" Size Furniture Grade PVC Pipe
-leg_idiam = 1.049 * INCH;
-truss_odiam = 1.050 * INCH;// FORMUFIT 3/4" Furniture Grade PVC pipe
-truss_idiam = 0.824 * INCH;
+leg_odiam = 1.325 * INCH;
+leg_idiam = 1.03 * INCH;
+
+truss_odiam = leg_odiam;
+truss_idiam = leg_idiam;
 
 // Adornments
 spike_diam = 16;
@@ -40,8 +41,8 @@ spike_length = 27;
 sphere_diameter = 0.75 * INCH;
 
 // Flags to show different things
-show_part = true;
-part = "platform";// Values are hi, low, platform
+show_part = false;
+part = "test";// Values are hi, low, platform
 
 show_spike = true;
 show_top = true;
@@ -224,42 +225,65 @@ module low_truss() {
         }
 }
 
-union() {
+if (show_part && part == "test") {
   difference() {
     union() {
-      // Legs
-      leg(show_length = true);
-      translate([th, -base_width / 2, 0])
-        rotate([0, 0, 120])
-          leg();
-      translate([th, base_width / 2, 0])
-        rotate([0, 0, 240])
-          leg();
-
-          // Trusses
-      hi_truss();
-      low_truss();
-
+      cylinder(INCH, leg_idiam / 2, leg_idiam / 2);
+      cylinder(INCH / 2, leg_odiam / 2, leg_odiam / 2);
     }
 
-    // If we are just showing a part, hide things we don't want to dee
-    if (show_part) {
-      if (part == "low") {
-        translate([-100, -400, low_truss_height + 2.5 * INCH])
-          cube([800, 800, 1500]);
+    my_thread(diameter = 1 / 4 * INCH, pitch = 1 / 20 * INCH, length = INCH);
 
-        translate([70, -400, -10])
-          cube([800, 800, 200]);
+    translate([0, 0, INCH]) {
+      sphere(d = sphere_diameter);
+    }
+  }
+
+}
+
+else {
+  union() {
+    difference() {
+      union() {
+        // Legs
+        leg(show_length = true);
+        translate([th, -base_width / 2, 0])
+          rotate([0, 0, 120])
+            leg();
+        translate([th, base_width / 2, 0])
+          rotate([0, 0, 240])
+            leg();
+
+            // Trusses
+        hi_truss();
+        low_truss();
+
       }
 
-      if (part == "hi") {
-        translate([-100, -400, -INCH * 4])
-          cube([800, 800, alt_stand_height]);
-      }
+      // If we are just showing a part, hide things we don't want to dee
+      if (show_part) {
+        if (part == "low") {
+          translate([-100, -400, low_truss_height + 2.5 * INCH])
+            cube([800, 800, 1500]);
 
-      if (part == "platform") {
-        translate([-100, -400, 0])
-          cube([800, 800, alt_stand_height]);
+          translate([70, -400, -10])
+            cube([800, 800, 200]);
+        }
+
+        if (part == "hi") {
+          translate([-100, -400, -INCH * 4])
+            cube([800, 800, alt_stand_height]);
+        }
+
+        if (part == "platform") {
+          translate([-100, -400, 0])
+            cube([800, 800, alt_stand_height]);
+        }
+
+        if (part == "test") {
+          translate([-100, -400, 0])
+            cube([800, 800, stand_height]);
+        }
       }
     }
   }
@@ -294,6 +318,7 @@ if ((show_top && !show_part) || (show_part && part == "platform"))
             translate([0, 0, 3])
               cylinder(INCH, 15, 15);
           }
+
 
 if (show_guide)
   color("grey") {
