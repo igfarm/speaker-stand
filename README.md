@@ -11,8 +11,8 @@ The top plate for the speaker is attached with a single 1/4"-20 screw. The botto
 The provided OpenSCAD file allows customization of various stand dimensions and features:
 
 - `stand_height`: Total height of the stand, including spikes and top balls, excluding the height of the top plate.
-- `top_width`: Width of top square platform.
-- `top_height`: Height of top platform.
+- `platform_width`: Width of top square platform.
+- `platform_height`: Height of top platform.
 - `base_width`: Distance between two legs.
 - `leg_odiam`: Outside diamater of leg PVC pipe.
 - `leg_idiam`: Inside diamater of leg PVC pipe.
@@ -30,7 +30,7 @@ Additional display options include toggling the visibility of the spikes, top pl
 To create printable 3D parts using the SCAD file:
 
 - `show_part`: set to true if you want to generate one of the parts
-- `part`: part to show, values are "hi" and "low"
+- `part`: part to show, values are "hi", "low", "platform"
 
 These parts are suitable for printing on a Prusa Mini printer with a 7"x7"x7" bed.
 
@@ -42,19 +42,23 @@ These parts are suitable for printing on a Prusa Mini printer with a 7"x7"x7" be
 - Speaker spikes ([Amazon Link](https://www.amazon.com/gp/product/B09K3H8FD9/))
 - Sand to fill legs
 - 1/4"-20 bolt to connect top plate to stand
-- 6"x6" plywood top plate
-- Epoxy to glue parts
+- Plywood top plate (or 3d printed part)
+- Epoxy to glue connectors to tubes
 - 3D printed parts
 
 ## 3D Printed Parts
 
-Top Part
+### Bottom Connector
 
 <img src="./assets/part1.png" width="400">
 
-Bottom Part
+### Top Connector
 
 <img src="./assets/part2.png" width="400">
+
+### Platform Plate
+
+<img src="./assets/platform.png" width="400">
 
 ## Development
 

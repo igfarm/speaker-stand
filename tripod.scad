@@ -40,8 +40,8 @@ spike_length = 27;
 sphere_diameter = 0.75 * INCH;
 
 // Flags to show different things
-show_part = false;
-part = "hi";// Values are hi, low, platform
+show_part = true;
+part = "platform";// Values are hi, low, platform
 
 show_spike = true;
 show_top = true;
