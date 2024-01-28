@@ -22,9 +22,9 @@ include <BOSL2/screws.scad>
 // Basic stats
 stand_height = 28 * INCH;
 base_width = 13 * INCH;
-platform_width = 6 * INCH;
-platform_height = 0.75 * INCH;
-platform_angle = 10;
+plate_width = 6 * INCH;
+plate_height = 0.75 * INCH;
+plate_angle = 10;
 
 //
 // https://pvcfittingstore.com/pages/pvc-pipe-sizes-and-dimensions
@@ -43,9 +43,8 @@ spike_thread_pitch = 1.25;
 spike_thread_length = 13;
 
 // Platform Screw
-plaform_screw_diam = 1 / 4 * INCH;
-plaform_screw_pitch = 1 / 20 * INCH;
-
+plate_screw_diam = 1 / 4 * INCH;
+plate_screw_pitch = 1 / 20 * INCH;
 
 // Steel ball
 sphere_diameter = 0.75 * INCH;
@@ -58,12 +57,12 @@ show_spike = true;
 show_top = true;
 show_inner = false;
 
-show_guide = true;
+show_guide = false;
 
 taper_length = INCH;
 
 // Calculated values
-alt_stand_height = stand_height - platform_height;
+alt_stand_height = stand_height - plate_height;
 
 // Where the trusses live
 low_truss_height = INCH * 2.5;
@@ -75,9 +74,9 @@ thread_ajsument = 0.3;
 
 base_diamater = base_width / sqrt(3) * 2;
 base_radius = base_diamater / 2;
-top_diameter = platform_width / sqrt(3) * 2 - leg_odiam * 2;
+top_diameter = plate_width / sqrt(3) * 2 - leg_odiam * 1.8;
 top_radius = top_diameter / 2;
-top_offset = (sqrt(3) - 1) * platform_width / 2 - top_radius;
+top_offset = top_radius - plate_width * sqrt(3) / 4; 
 
 hi_truss_radius = hi_truss_height * (top_radius - base_radius) / alt_stand_height + base_radius;
 hi_truss_length = hi_truss_radius * sqrt(3);
@@ -125,7 +124,7 @@ module leg(show_length = false) {
           translate([0, 0, spike_length]) {
             difference() {
               cylinder(taper_length, spike_diam / 2 * 1.5, leg_odiam / 2);
-              my_thread(diameter = spike_thread, pitch = spike_thead_pitch, length = spike_thead_length * 1.5);
+              my_thread(diameter = spike_thread, pitch = spike_thread_pitch, length = spike_thread_length * 1.5);
             }
           }
         }
@@ -210,7 +209,7 @@ module hi_truss() {
         difference() {
           alt_len = alt_stand_height - hi_truss_height - 0.125 * INCH;
           cylinder(alt_len, truss_odiam / 3, truss_odiam / 3);
-          my_thread(diameter = plaform_screw_diam, pitch = plaform_screw_pitch, length = alt_len);
+          my_thread(diameter = plate_screw_diam, pitch = plate_screw_pitch, length = alt_len);
         }
       }
 }
@@ -310,25 +309,25 @@ if ((show_top && !show_part) || (show_part && part == "platform"))
       rotate([0, 0, 240])
         translate([top_offset, 0, 0])
           difference() {
-            cube([platform_width, platform_width, platform_height], center = true);
-            translate([0, platform_width / 2 + 4, 0]) {
-              rotate([-platform_angle, 0, 0])
-                cube([platform_width, platform_height, 2 * platform_height], center = true);
+            cube([plate_width, plate_width, plate_height], center = true);
+            translate([0, plate_width / 2 + 4, 0]) {
+              rotate([-plate_angle, 0, 0])
+                cube([plate_width, plate_height, 2 * plate_height], center = true);
             }
-            translate([0, -platform_width / 2 - 4, 0]) {
-              rotate([platform_angle, 0, 0])
-                cube([platform_width, platform_height, 2 * platform_height], center = true);
+            translate([0, -plate_width / 2 - 4, 0]) {
+              rotate([plate_angle, 0, 0])
+                cube([plate_width, plate_height, 2 * plate_height], center = true);
             }
-            translate([-platform_width / 2 - 4, 0, 0]) {
-              rotate([-platform_angle, 0, 90])
-                cube([platform_width, platform_height, 2 * platform_height], center = true);
+            translate([-plate_width / 2 - 4, 0, 0]) {
+              rotate([-plate_angle, 0, 90])
+                cube([plate_width, plate_height, 2 * plate_height], center = true);
             }
-            translate([platform_width / 2 - 4, 0, 0]) {
-              rotate([platform_angle, 0, 90])
-                cube([platform_width, platform_height, 2 * platform_height], center = true);
+            translate([plate_width / 2 - 4, 0, 0]) {
+              rotate([plate_angle, 0, 90])
+                cube([plate_width, plate_height, 2 * plate_height], center = true);
             }
-            translate([0, 0, -platform_height / 2])
-              cylinder(platform_height * 2, INCH / 8 + 0.2, INCH / 8 + 0.2);
+            translate([0, 0, -plate_height / 2])
+              cylinder(plate_height * 2, INCH / 8 + 0.2, INCH / 8 + 0.2);
 
             translate([0, 0, 3])
               cylinder(INCH, 15, 15);
