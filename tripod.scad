@@ -35,9 +35,19 @@ leg_idiam = 1.03 * INCH;
 truss_odiam = leg_odiam;
 truss_idiam = leg_idiam;
 
-// Adornments
+// Spike
 spike_diam = 16;
-spike_length = 27;
+spike_length = 28;
+spike_thread = 6;
+spike_thread_pitch = 1.25;
+spike_thread_length = 13;
+
+// Platform Screw
+plaform_screw_diam = 1 / 4 * INCH;
+plaform_screw_pitch = 1 / 20 * INCH;
+
+
+// Steel ball
 sphere_diameter = 0.75 * INCH;
 
 // Flags to show different things
@@ -48,7 +58,7 @@ show_spike = true;
 show_top = true;
 show_inner = false;
 
-show_guide = false;
+show_guide = true;
 
 taper_length = INCH;
 
@@ -115,7 +125,7 @@ module leg(show_length = false) {
           translate([0, 0, spike_length]) {
             difference() {
               cylinder(taper_length, spike_diam / 2 * 1.5, leg_odiam / 2);
-              my_thread(diameter = 6, pitch = 1, length = 15);
+              my_thread(diameter = spike_thread, pitch = spike_thead_pitch, length = spike_thead_length * 1.5);
             }
           }
         }
@@ -200,7 +210,7 @@ module hi_truss() {
         difference() {
           alt_len = alt_stand_height - hi_truss_height - 0.125 * INCH;
           cylinder(alt_len, truss_odiam / 3, truss_odiam / 3);
-          my_thread(diameter = 1 / 4 * INCH, pitch = 1 / 20 * INCH, length = alt_len);
+          my_thread(diameter = plaform_screw_diam, pitch = plaform_screw_pitch, length = alt_len);
         }
       }
 }
@@ -228,11 +238,16 @@ module low_truss() {
 if (show_part && part == "test") {
   difference() {
     union() {
+      translate([-20, -25, 0])
+        cube([40, 20, 10]);
       cylinder(INCH, leg_idiam / 2, leg_idiam / 2);
       cylinder(INCH / 2, leg_odiam / 2, leg_odiam / 2);
     }
 
-    my_thread(diameter = 1 / 4 * INCH, pitch = 1 / 20 * INCH, length = INCH);
+    translate([-14, -18, 0])
+      my_thread(diameter = 1 / 4 * INCH, pitch = 1 / 20 * INCH, length = INCH);
+    translate([14, -18, 0])
+      my_thread(diameter = spike_thread, pitch = spike_thread_pitch, length = INCH);
 
     translate([0, 0, INCH]) {
       sphere(d = sphere_diameter);
@@ -321,8 +336,8 @@ if ((show_top && !show_part) || (show_part && part == "platform"))
 
 
 if (show_guide)
-  color("grey") {
-    translate([base_radius, 0, alt_stand_height + INCH])
+  color("green") {
+    translate([base_radius, 0, stand_height])
       cylinder(1, top_radius, top_radius);
 
     translate([base_radius, 0, 0])

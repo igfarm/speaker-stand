@@ -1,2 +1,4 @@
 .DS_Store
 BOSL2
+test*.*
+*.scadbak
