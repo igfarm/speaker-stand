@@ -39,7 +39,7 @@ truss_idiam = leg_idiam;
 spike_diam = 16;
 spike_length = 28;
 spike_thread = 6;
-spike_thread_pitch = 1.25;
+spike_thread_pitch = 1;
 spike_thread_length = 13;
 
 // Platform Screw
