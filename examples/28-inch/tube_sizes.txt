@@ -3,9 +3,9 @@ ECHO: 548.511
 ECHO: "low truss tube length"
 ECHO: 224.862
 Geometries in cache: 101
-Geometry cache size in bytes: 2080128
+Geometry cache size in bytes: 2081568
 CGAL Polyhedrons in cache: 0
 CGAL cache size in bytes: 0
-Total rendering time: 0:00:00.354
+Total rendering time: 0:00:00.357
 Top level object is a 3D object:
-   Facets:      17724
+   Facets:      17754

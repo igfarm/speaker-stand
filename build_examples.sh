@@ -29,4 +29,10 @@ do
     -D 'show_part=true' \
     -D 'part="low"'  \
     $INFILE
+
+    $OPENSCAD -o $ODIR/tripod-platform.stl \
+    -D 'stand_height='${MM_HEIGHT} \
+    -D 'show_part=true' \
+    -D 'part="platform"'  \
+    $INFILE
 done

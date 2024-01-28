@@ -1,13 +1,30 @@
+/*
+This file is part of the speaker-stand project.
+
+The speaker-stand project is free software: you can redistribute it 
+and/or modify it under  the terms of the GNU General Public License 
+as published by the Free Software Foundation, either version 3 of 
+the License, or (at your option) any later version.
+
+The speaker-stand project is distributed in the hope that it will be 
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License along 
+with the project. If not, see <https://www.gnu.org/licenses/>.
+*/
 $fn = 72;
 include <BOSL2/std.scad>
 include <BOSL2/threading.scad>
 include <BOSL2/screws.scad>
 
 // Basic stats
-stand_height = 20 * INCH;
+stand_height = 28 * INCH;
 base_width = 13 * INCH;
-top_width = 6 * INCH;
-top_height = 0.75 * INCH;
+platform_width = 6 * INCH;
+platform_height = 0.75 * INCH;
+platform_angle = 10;
 
 //
 // https://pvcfittingstore.com/pages/pvc-pipe-sizes-and-dimensions
@@ -21,11 +38,10 @@ truss_idiam = 0.824 * INCH;
 spike_diam = 16;
 spike_length = 27;
 sphere_diameter = 0.75 * INCH;
-top_angle = 10;
 
 // Flags to show different things
 show_part = false;
-part = "low";// Values are hi and low
+part = "hi";// Values are hi, low, platform
 
 show_spike = true;
 show_top = true;
@@ -36,21 +52,21 @@ show_guide = false;
 taper_length = INCH;
 
 // Calculated values
-alt_stand_height = stand_height - top_height;
+alt_stand_height = stand_height - platform_height;
 
 // Where the trusses live
 low_truss_height = INCH * 2.5;
 hi_truss_height = alt_stand_height - 1.5 * INCH;
 
-// Oversize thread diamater adjusment. 
+// Oversize thread diamater adjusment.
 // This value works using Prusa Mini+ using PLA
 thread_ajsument = 0.3;
 
 base_diamater = base_width / sqrt(3) * 2;
 base_radius = base_diamater / 2;
-top_diameter = top_width / sqrt(3) * 2 - leg_odiam * 2;
+top_diameter = platform_width / sqrt(3) * 2 - leg_odiam * 2;
 top_radius = top_diameter / 2;
-top_offset = (sqrt(3) - 1) * top_width / 2 - top_radius;
+top_offset = (sqrt(3) - 1) * platform_width / 2 - top_radius;
 
 hi_truss_radius = hi_truss_height * (top_radius - base_radius) / alt_stand_height + base_radius;
 hi_truss_length = hi_truss_radius * sqrt(3);
@@ -226,49 +242,57 @@ union() {
 
     }
 
-    if (show_part && part == "low") {
-      translate([-100, -400, low_truss_height + 2.5 * INCH])
-        cube([800, 800, 1500]);
+    // If we are just showing a part, hide things we don't want to dee
+    if (show_part) {
+      if (part == "low") {
+        translate([-100, -400, low_truss_height + 2.5 * INCH])
+          cube([800, 800, 1500]);
 
-      translate([70, -400, -10])
-        cube([800, 800, 200]);
-    }
+        translate([70, -400, -10])
+          cube([800, 800, 200]);
+      }
 
-    if (show_part && part == "hi") {
-      translate([-100, -400, -INCH * 4])
-        cube([800, 800, alt_stand_height]);
+      if (part == "hi") {
+        translate([-100, -400, -INCH * 4])
+          cube([800, 800, alt_stand_height]);
+      }
+
+      if (part == "platform") {
+        translate([-100, -400, 0])
+          cube([800, 800, alt_stand_height]);
+      }
     }
   }
 }
 
-if (show_top && !show_part)
+if ((show_top && !show_part) || (show_part && part == "platform"))
   color("grey")
     translate([base_diamater / 2, 0, alt_stand_height + 0.75 * INCH / 2])
       rotate([0, 0, 240])
         translate([top_offset, 0, 0])
           difference() {
-            cube([top_width, top_width, top_height], center = true);
-            translate([0, top_width/2+4, 0]) {
-                  rotate([-top_angle,0,0])
-                    cube([top_width, top_height, 2*top_height],center=true);
-                }
-            translate([0, -top_width/2-4, 0]) {
-                  rotate([top_angle,0,0])
-                    cube([top_width, top_height, 2*top_height],center=true);
-                }
-            translate([-top_width/2-4, 0, 0]) {
-                  rotate([-top_angle,0,90])
-                    cube([top_width, top_height, 2*top_height],center=true);
-                }
-            translate([top_width/2-4, 0, 0]) {
-                  rotate([top_angle,0,90])
-                    cube([top_width, top_height, 2*top_height],center=true);
-                }
-            translate([0, 0, -top_height/2]) 
-               cylinder(top_height*2, INCH/8+0.2, INCH/8+0.2);
-            
-               translate([0, 0, 3])
-                 cylinder(INCH, 15, 15);
+            cube([platform_width, platform_width, platform_height], center = true);
+            translate([0, platform_width / 2 + 4, 0]) {
+              rotate([-platform_angle, 0, 0])
+                cube([platform_width, platform_height, 2 * platform_height], center = true);
+            }
+            translate([0, -platform_width / 2 - 4, 0]) {
+              rotate([platform_angle, 0, 0])
+                cube([platform_width, platform_height, 2 * platform_height], center = true);
+            }
+            translate([-platform_width / 2 - 4, 0, 0]) {
+              rotate([-platform_angle, 0, 90])
+                cube([platform_width, platform_height, 2 * platform_height], center = true);
+            }
+            translate([platform_width / 2 - 4, 0, 0]) {
+              rotate([platform_angle, 0, 90])
+                cube([platform_width, platform_height, 2 * platform_height], center = true);
+            }
+            translate([0, 0, -platform_height / 2])
+              cylinder(platform_height * 2, INCH / 8 + 0.2, INCH / 8 + 0.2);
+
+            translate([0, 0, 3])
+              cylinder(INCH, 15, 15);
           }
 
 if (show_guide)
