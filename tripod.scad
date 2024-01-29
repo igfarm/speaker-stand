@@ -59,15 +59,15 @@ plate_screw_pitch = 1 / 20 * INCH;
 sphere_diameter = 0.75 * INCH;
 
 // Flags to show different things
-show_part = true;
+show_part = false;
 part = "hi";// Values are hi, low, platform
 
 show_spike = true;
 show_top = true;
 show_inner = false;
+show_speaker = false;
 
 show_guide = false;
-show_speaker = true;
 
 taper_length = INCH;
 
@@ -350,8 +350,6 @@ if ((show_top && !show_part) || (show_part && part == "platform"))
                 }
           }
 
-
-
 if (show_speaker && !show_part) {
   translate([base_diamater / 2, 0, stand_height + speaker_height / 2])
     color("white")
@@ -359,6 +357,7 @@ if (show_speaker && !show_part) {
         translate([0, 0, 0])
           cube([speaker_width, speaker_depth, speaker_height], center = true);
 }
+
 if (show_guide)
   color("green") {
     translate([base_radius, 0, stand_height])
