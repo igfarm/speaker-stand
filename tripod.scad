@@ -50,8 +50,8 @@ plate_screw_pitch = 1 / 20 * INCH;
 sphere_diameter = 0.75 * INCH;
 
 // Flags to show different things
-show_part = false;
-part = "test";// Values are hi, low, platform
+show_part = true;
+part = "low";// Values are hi, low, platform
 
 show_spike = true;
 show_top = true;
@@ -163,7 +163,7 @@ module leg(show_length = false) {
 }
 
 module truss_with_sleeve(truss_length, show_length = false) {
-  truss_tube_length = low_truss_length - truss_idiam * 4;
+  truss_tube_length = truss_length - truss_idiam * 2 - INCH;
   if (show_length) {
     echo("low truss tube length");
     echo(truss_tube_length);
@@ -174,16 +174,16 @@ module truss_with_sleeve(truss_length, show_length = false) {
     difference() {
       cylinder(truss_length, truss_odiam / 2, truss_odiam / 2);
       if (show_inner || show_part)
-        translate([0, 0, truss_idiam * 2])
+        translate([0, 0, (truss_length-truss_tube_length)/2])
           difference() {
-            cylinder(truss_tube_length, truss_odiam / 2 + 2, truss_odiam / 2 + 2);
+            cylinder(truss_tube_length, truss_odiam / 2 + 0.1, truss_odiam / 2 + 0.1);
             cylinder(truss_tube_length, truss_idiam / 2, truss_idiam / 2);
           }
     }
   }
 
   if (!show_inner && !show_part)
-    translate([0, 0, truss_idiam * 2])
+      translate([0, 0, (truss_length-truss_tube_length)/2])
       color("grey")
         cylinder(truss_tube_length, truss_odiam / 2 + 0.1, truss_odiam / 2 + 0.1);
 
