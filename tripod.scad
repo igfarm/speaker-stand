@@ -14,6 +14,9 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along 
 with the project. If not, see <https://www.gnu.org/licenses/>.
 */
+
+// ../formatter/scadformat/scadformat ./tripod.scad
+
 $fn = 72;
 include <BOSL2/std.scad>
 include <BOSL2/threading.scad>
@@ -23,6 +26,7 @@ include <BOSL2/screws.scad>
 stand_height = 28 * INCH;
 base_width = 13 * INCH;
 plate_width = 6 * INCH;
+
 plate_height = 0.75 * INCH;
 plate_angle = 10;
 
@@ -42,6 +46,11 @@ spike_thread = 6;
 spike_thread_pitch = 1;
 spike_thread_length = 13;
 
+// Kef LM50
+speaker_width = 200;
+speaker_depth = 280.5;
+speaker_height = 302;
+
 // Platform Screw
 plate_screw_diam = 1 / 4 * INCH;
 plate_screw_pitch = 1 / 20 * INCH;
@@ -51,13 +60,14 @@ sphere_diameter = 0.75 * INCH;
 
 // Flags to show different things
 show_part = true;
-part = "low";// Values are hi, low, platform
+part = "hi";// Values are hi, low, platform
 
 show_spike = true;
 show_top = true;
 show_inner = false;
 
 show_guide = false;
+show_speaker = true;
 
 taper_length = INCH;
 
@@ -75,8 +85,9 @@ thread_ajsument = 0.3;
 base_diamater = base_width / sqrt(3) * 2;
 base_radius = base_diamater / 2;
 top_diameter = plate_width / sqrt(3) * 2 - leg_odiam * 1.8;
+echo("top_diameter", top_diameter);
 top_radius = top_diameter / 2;
-top_offset = top_radius - plate_width * sqrt(3) / 4; 
+top_offset = top_radius - plate_width * sqrt(3) / 4;
 
 hi_truss_radius = hi_truss_height * (top_radius - base_radius) / alt_stand_height + base_radius;
 hi_truss_length = hi_truss_radius * sqrt(3);
@@ -103,8 +114,7 @@ module leg(show_length = false) {
 
   leg_tube_length = (hi_truss_height - low_truss_height) / cos(leg_angle) - truss_odiam * 2;
   if (show_length) {
-    echo("leg tube length");
-    echo(leg_tube_length);
+    echo("leg tube length", leg_tube_length);
   }
 
   union() {
@@ -165,8 +175,7 @@ module leg(show_length = false) {
 module truss_with_sleeve(truss_length, show_length = false) {
   truss_tube_length = truss_length - truss_idiam * 2 - INCH;
   if (show_length) {
-    echo("low truss tube length");
-    echo(truss_tube_length);
+    echo("low truss tube length", truss_tube_length);
   }
 
   union() {
@@ -174,7 +183,7 @@ module truss_with_sleeve(truss_length, show_length = false) {
     difference() {
       cylinder(truss_length, truss_odiam / 2, truss_odiam / 2);
       if (show_inner || show_part)
-        translate([0, 0, (truss_length-truss_tube_length)/2])
+        translate([0, 0, (truss_length - truss_tube_length) / 2])
           difference() {
             cylinder(truss_tube_length, truss_odiam / 2 + 0.1, truss_odiam / 2 + 0.1);
             cylinder(truss_tube_length, truss_idiam / 2, truss_idiam / 2);
@@ -183,7 +192,7 @@ module truss_with_sleeve(truss_length, show_length = false) {
   }
 
   if (!show_inner && !show_part)
-      translate([0, 0, (truss_length-truss_tube_length)/2])
+    translate([0, 0, (truss_length - truss_tube_length) / 2])
       color("grey")
         cylinder(truss_tube_length, truss_odiam / 2 + 0.1, truss_odiam / 2 + 0.1);
 
@@ -310,30 +319,46 @@ if ((show_top && !show_part) || (show_part && part == "platform"))
         translate([top_offset, 0, 0])
           difference() {
             cube([plate_width, plate_width, plate_height], center = true);
-            translate([0, plate_width / 2 + 4, 0]) {
-              rotate([-plate_angle, 0, 0])
-                cube([plate_width, plate_height, 2 * plate_height], center = true);
-            }
-            translate([0, -plate_width / 2 - 4, 0]) {
-              rotate([plate_angle, 0, 0])
-                cube([plate_width, plate_height, 2 * plate_height], center = true);
-            }
-            translate([-plate_width / 2 - 4, 0, 0]) {
-              rotate([-plate_angle, 0, 90])
-                cube([plate_width, plate_height, 2 * plate_height], center = true);
-            }
-            translate([plate_width / 2 - 4, 0, 0]) {
-              rotate([plate_angle, 0, 90])
-                cube([plate_width, plate_height, 2 * plate_height], center = true);
-            }
-            translate([0, 0, -plate_height / 2])
-              cylinder(plate_height * 2, INCH / 8 + 0.2, INCH / 8 + 0.2);
 
+            // screw resess
             translate([0, 0, 3])
               cylinder(INCH, 15, 15);
+
+              // Speaker mouting holes
+            speaker_hole_depth = 139;
+            speaker_hole_width = 120;
+            speaker_hole_diam = 8.5;
+
+            translate([-speaker_hole_depth / 2, -speaker_hole_width / 2, -10]) {
+              cylinder(plate_height + 10, speaker_hole_diam / 2, speaker_hole_diam / 2);
+              translate([speaker_hole_depth, 0, 0])
+                cylinder(plate_height + 10, speaker_hole_diam / 2, speaker_hole_diam / 2);
+              translate([speaker_hole_depth, speaker_hole_width, 0])
+                cylinder(plate_height + 10, speaker_hole_diam / 2, speaker_hole_diam / 2);
+              translate([speaker_hole_depth, speaker_hole_width, 0])
+                cylinder(plate_height + 10, speaker_hole_diam / 2, speaker_hole_diam / 2);
+              translate([0, speaker_hole_width, 0])
+                cylinder(plate_height + 10, speaker_hole_diam / 2, speaker_hole_diam / 2);
+            }
+
+            // Corner bevels
+            for(rot = [0, 90, 180, 270])
+              rotate([0, 0, rot])
+                translate([0, plate_width / 2 + 9, 0]) {
+                  rotate([-plate_angle, 0, 0])
+                    cube([plate_width, plate_height, 2 * plate_height], center = true);
+                }
           }
 
 
+
+if (show_speaker && !show_part) {
+  translate([base_diamater / 2, 0, stand_height + speaker_height / 2])
+    color("white")
+      rotate([0, 0, -30])
+        translate([0, 0, 0])
+          cube([speaker_width, speaker_depth, speaker_height], center = true);
+}
 if (show_guide)
   color("green") {
     translate([base_radius, 0, stand_height])
