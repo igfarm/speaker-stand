@@ -25,8 +25,9 @@ include <BOSL2/screws.scad>
 // Basic stats
 stand_height = 28 * INCH;
 base_width = 13 * INCH;
-plate_width = 6 * INCH;
 
+plate_width = 6 * INCH;
+plate_depth = 6.5 * INCH;
 plate_height = 0.75 * INCH;
 plate_angle = 10;
 
@@ -51,7 +52,12 @@ speaker_width = 200;
 speaker_depth = 280.5;
 speaker_height = 302;
 
-// Platform Screw
+speaker_hole_depth = 138;
+speaker_hole_width = 123;
+speaker_hole_diam = 8.5;
+
+
+// Plate Screw
 plate_screw_diam = 1 / 4 * INCH;
 plate_screw_pitch = 1 / 20 * INCH;
 
@@ -60,7 +66,7 @@ sphere_diameter = 0.75 * INCH;
 
 // Flags to show different things
 show_part = false;
-part = "hi";// Values are hi, low, platform
+part = "plate";// Values are hi, low, plate
 
 show_spike = true;
 show_top = true;
@@ -298,7 +304,7 @@ else {
             cube([800, 800, alt_stand_height]);
         }
 
-        if (part == "platform") {
+        if (part == "plate") {
           translate([-100, -400, 0])
             cube([800, 800, alt_stand_height]);
         }
@@ -312,42 +318,48 @@ else {
   }
 }
 
-if ((show_top && !show_part) || (show_part && part == "platform"))
+if ((show_top && !show_part) || (show_part && part == "plate"))
   color("grey")
     translate([base_diamater / 2, 0, alt_stand_height + 0.75 * INCH / 2])
       rotate([0, 0, 240])
         translate([top_offset, 0, 0])
           difference() {
-            cube([plate_width, plate_width, plate_height], center = true);
+            cube([plate_depth, plate_width, plate_height], center = true);
 
-            // screw resess
-            translate([0, 0, 3])
-              cylinder(INCH, 15, 15);
+            // plate screw
+            translate([0, 0, 0])
+              screw_hole("1/4-20", "flat", length = plate_height);
 
-              // Speaker mouting holes
-            speaker_hole_depth = 139;
-            speaker_hole_width = 120;
-            speaker_hole_diam = 8.5;
+              // speaker screws
+            translate([-speaker_hole_depth / 2, -speaker_hole_width / 2, 0])
+              for(x = [0, speaker_hole_depth])
+                for(y = [0, speaker_hole_width])
+                  translate([x, y, 0])
+                    rotate([0, 180, 0])
+                      screw_hole("M8", "socket", length = plate_height);
 
-            translate([-speaker_hole_depth / 2, -speaker_hole_width / 2, -10]) {
-              cylinder(plate_height + 10, speaker_hole_diam / 2, speaker_hole_diam / 2);
-              translate([speaker_hole_depth, 0, 0])
-                cylinder(plate_height + 10, speaker_hole_diam / 2, speaker_hole_diam / 2);
-              translate([speaker_hole_depth, speaker_hole_width, 0])
-                cylinder(plate_height + 10, speaker_hole_diam / 2, speaker_hole_diam / 2);
-              translate([speaker_hole_depth, speaker_hole_width, 0])
-                cylinder(plate_height + 10, speaker_hole_diam / 2, speaker_hole_diam / 2);
-              translate([0, speaker_hole_width, 0])
-                cylinder(plate_height + 10, speaker_hole_diam / 2, speaker_hole_diam / 2);
-            }
-
-            // Corner bevels
-            for(rot = [0, 90, 180, 270])
+                      // bevel the corners
+            for(rot = [0, 180])
               rotate([0, 0, rot])
                 translate([0, plate_width / 2 + 9, 0]) {
                   rotate([-plate_angle, 0, 0])
+                    cube([plate_depth, plate_height, 2 * plate_height], center = true);
+                }
+            for(rot = [90, 270])
+              rotate([0, 0, rot])
+                translate([0, plate_depth / 2 + 9, 0]) {
+                  rotate([-plate_angle, 0, 0])
                     cube([plate_width, plate_height, 2 * plate_height], center = true);
                 }
+
+
+                // Make a place for balls to rest on
+            translate([-top_offset, 0, 0])
+              for(rot = [60, 180, 300])
+                rotate([0, 0, rot])
+                  translate([top_radius + 2, 0, -0.5])
+                    sphere(d = sphere_diameter);
+
           }
 
 if (show_speaker && !show_part) {
