@@ -66,7 +66,7 @@ sphere_diameter = 0.75 * INCH;
 
 // Flags to show different things
 show_part = false;
-part = "plate";// Values are hi, low, plate
+part = "hi";// Values are hi, low, plate
 
 show_spike = true;
 show_top = true;
