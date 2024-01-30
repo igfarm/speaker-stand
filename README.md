@@ -57,12 +57,24 @@ These parts are suitable for printing on a Prusa Mini printer with a 7"x7"x7" be
 
 ## Development
 
+### Third Prototype
+
+Waiting for parts...
+
+### Second Prototype
+
+<img src="./assets/prototype2.png" width="400">
+
+Starting to look like the real thing.
+
+- Need to fine tune the gemoetry.
+- Print orientation is importat to get proper fitting parts.
+- Added a print test article.
+
+<img src="./assets/prototype2-test.png" width="400">
+
 ### First Prototype
 
 <img src="./assets/prototype1.png" width="400">
 
 This proof of concept was made using old PVC pipes found in the garage.
-
-### Second Prototype
-
-Waiting for parts...
