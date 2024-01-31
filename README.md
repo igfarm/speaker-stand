@@ -10,10 +10,10 @@ The top plate for the speaker is attached with a single 1/4"-20 screw. The botto
 
 The provided OpenSCAD file allows customization of various stand dimensions and features:
 
-- `stand_height`: Total height of the stand, including spikes and top balls, excluding the height of the top plate.
-- `platform_width`: Width of top square platform.
-- `platform_height`: Height of top platform.
-- `base_width`: Distance between two legs.
+- `default_height`: Total height of the stand, including spikes and top plate.
+- `default_width`: Distance between two legs.
+- `plate_width`: Width of top plate.
+- `plate_height`: Height of top plate.
 - `leg_odiam`: Outside diamater of leg PVC pipe.
 - `leg_idiam`: Inside diamater of leg PVC pipe.
 
@@ -27,39 +27,38 @@ Additional display options include toggling the visibility of the spikes, top pl
 
 To create printable 3D parts using the SCAD file:
 
-- `show_part`: set to true if you want to generate one of the parts
-- `part`: part to show, values are "hi", "low", "platform", "test"
+- `default_show`: part to show, values are "all", "hi", "low", "plate", and "test"
 
 These parts are suitable for printing on a Prusa Mini printer with a 7"x7"x7" bed.
 
 ## Materials
 
 - 1" schedule 40 PVC pipe for legs and trusses
-- Speaker spikes ([Amazon Link](https://www.amazon.com/gp/product/B09K3H8FD9/))
-- Sand to fill legs
+- Speaker spikes with M6 thread ([Amazon Link](https://www.amazon.com/gp/product/B09K3H8FD9/))
 - 1/4"-20 bolt to connect top plate to stand
 - Epoxy to glue connectors to tubes
 - 3D printed parts
+- Sand to fill the legs
 
 ## 3D Printed Parts
 
-### Bottom Connector
+### Plate
 
-<img src="./assets/part1.png" width="400">
+<img src="./assets/platform.png" width="400">
 
 ### Top Connector
 
 <img src="./assets/part2.png" width="400">
 
-### Platform Plate
+### Bottom Connector
 
-<img src="./assets/platform.png" width="400">
+<img src="./assets/part1.png" width="400">
 
 ## Development
 
 ### Third Prototype
 
-Waiting for parts...
+Waiting for parts to print...
 
 ### Second Prototype
 

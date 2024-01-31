@@ -39,7 +39,7 @@ module tripod(height, width, show) {
 
   //
   // https://pvcfittingstore.com/pages/pvc-pipe-sizes-and-dimensions
-  //
+  // Set up for 1" schedule 40 PVC
   leg_odiam = 1.325 * INCH;
   leg_idiam = 1.03 * INCH;
 
