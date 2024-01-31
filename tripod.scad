@@ -175,7 +175,7 @@ module tripod(height, width, show) {
         }
 
         // Spike
-        if (show_spike && !show_part) {
+        if (show_spike && !show_part || show_part && part == "plate") {
           color("grey") {
             translate([0, 0, 0])
               cylinder(spike_length, 0, spike_diam / 2);
@@ -261,6 +261,21 @@ module tripod(height, width, show) {
           }
   }
 
+  module show_legs(show_length = true) {
+    union() {
+      // Legs
+      leg(show_length);
+      translate([th, -base_width / 2, 0]) {
+        rotate([0, 0, 120])
+          leg();
+      }
+      translate([th, base_width / 2, 0]) {
+        rotate([0, 0, 240])
+          leg();
+      }
+    }
+  }
+
   if (show_part && part == "test") {
     difference() {
       union() {
@@ -286,20 +301,9 @@ module tripod(height, width, show) {
     union() {
       difference() {
         union() {
-          // Legs
-          leg(show_length = true);
-          translate([th, -base_width / 2, 0]) {
-            rotate([0, 0, 120])
-              leg();
-          }
-          translate([th, base_width / 2, 0]) {
-            rotate([0, 0, 240])
-              leg();
-          }
-          // Trusses
+          show_legs(true);
           hi_truss();
           low_truss();
-
         }
 
         // If we are just showing a part, hide things we don't want to dee
@@ -313,8 +317,8 @@ module tripod(height, width, show) {
           }
 
           if (part == "hi") {
-            translate([-100, -400, -INCH * 4])
-              cube([800, 800, alt_stand_height]);
+            translate([-100, -400, -2.5 * INCH])
+              cube([800, 800, hi_truss_height]);
           }
 
           if (part == "plate") {
@@ -333,6 +337,7 @@ module tripod(height, width, show) {
 
   if ((show_top && !show_part) || (show_part && part == "plate"))
     color("grey")
+      difference() {
       translate([base_diamater / 2, 0, alt_stand_height + 0.75 * INCH / 2])
         rotate([0, 0, 240])
           translate([plate_offset, 0, 0])
@@ -367,16 +372,14 @@ module tripod(height, width, show) {
                       cube([plate_width, plate_height, 2 * plate_height], center = true);
                   }
               }
-
-              // Make a place for balls to rest on
-              translate([-plate_offset, 0, 0]) {
-                for(rot = [60, 180, 300])
-                  rotate([0, 0, rot])
-                    translate([top_radius + 2, 0, -0.5])
-                      sphere(d = sphere_diameter);
-              }
             }
 
+          // Make an indent for the balls
+          translate([0,0,0.5]) {
+            show_legs(false);
+          }
+
+}
   if (show_speaker && !show_part) {
     translate([base_diamater / 2, 0, stand_height + speaker_height / 2])
       color("white")
@@ -401,7 +404,7 @@ module tripod(height, width, show) {
 module speaker_tripod(height = default_height, width = default_width, show = default_show) {
   if (show == "hero") {
     for(h = [21, 25, 29]) {
-      translate([(29 - h) * INCH * 3.8, 0, 0])
+      translate([(h - 21) * INCH * 3, 0, 0])
         tripod(h * INCH, width, "all");
     }
   } else {
