@@ -37,6 +37,9 @@ module tripod(height, width, show) {
   plate_height = 0.75 * INCH;
   plate_angle = 10;
 
+  //top_diameter = plate_width / sqrt(3) * 2 - leg_odiam * 1.8;
+  top_diameter = 6 * INCH;
+
   //
   // https://pvcfittingstore.com/pages/pvc-pipe-sizes-and-dimensions
   // Set up for 1" schedule 40 PVC
@@ -95,11 +98,9 @@ module tripod(height, width, show) {
 
   base_diamater = base_width / sqrt(3) * 2;
   base_radius = base_diamater / 2;
-  //top_diameter = plate_width / sqrt(3) * 2 - leg_odiam * 1.8;
-  top_diameter = 6 * INCH;
-  echo("top_diameter", top_diameter);
   top_radius = top_diameter / 2;
-  top_offset = top_radius - plate_width * sqrt(3) / 4 - 22;
+
+  plate_offset = -1/4 * top_radius;
 
   hi_truss_radius = hi_truss_height * (top_radius - base_radius) / alt_stand_height + base_radius;
   hi_truss_length = hi_truss_radius * sqrt(3);
@@ -226,7 +227,7 @@ module tripod(height, width, show) {
           // Tube to connect to top plate
     translate([base_radius, 0, hi_truss_height])
       rotate([0, 0, 60])
-        translate([-top_offset, 0, 0]) {
+        translate([-plate_offset, 0, 0]) {
           difference() {
             alt_len = alt_stand_height - hi_truss_height - 0.125 * INCH;
             cylinder(alt_len, truss_odiam / 3, truss_odiam / 3);
@@ -328,7 +329,7 @@ module tripod(height, width, show) {
     color("grey")
       translate([base_diamater / 2, 0, alt_stand_height + 0.75 * INCH / 2])
         rotate([0, 0, 240])
-          translate([top_offset, 0, 0])
+          translate([plate_offset, 0, 0])
             difference() {
               cube([plate_depth, plate_width, plate_height], center = true);
 
@@ -360,7 +361,7 @@ module tripod(height, width, show) {
 
 
                   // Make a place for balls to rest on
-              translate([-top_offset, 0, 0])
+              translate([-plate_offset, 0, 0])
                 for(rot = [60, 180, 300])
                   rotate([0, 0, rot])
                     translate([top_radius + 2, 0, -0.5])
@@ -387,13 +388,11 @@ module tripod(height, width, show) {
       translate([base_radius, 0, 0])
         cylinder(alt_stand_height + 50, 5, 5);
     }
-
-
 }
 
 module speaker_tripod(height = default_height, width = default_width, show = default_show) {
   if (show == "hero") {
-    for(h = [29, 25, 21]) {
+    for(h = [21, 25, 29]) {
       translate([(29-h) * INCH * 3.8, 0, 0])
         tripod(h * INCH, width, "all");
     }
@@ -403,4 +402,5 @@ module speaker_tripod(height = default_height, width = default_width, show = def
   }
 }
 
-speaker_tripod();
+rotate([0,0,30])
+  speaker_tripod();
