@@ -229,7 +229,7 @@ module tripod(height, width, show) {
       rotate([0, 0, 60])
         translate([-plate_offset, 0, 0]) {
           difference() {
-            alt_len = alt_stand_height - hi_truss_height - 0.125 * INCH;
+            alt_len = alt_stand_height - hi_truss_height - 1/16 * INCH;
             cylinder(alt_len, truss_odiam / 3, truss_odiam / 3);
             my_thread(diameter = plate_screw_diam, pitch = plate_screw_pitch, length = alt_len);
           }
