@@ -100,7 +100,7 @@ module tripod(height, width, show) {
   base_radius = base_diamater / 2;
   top_radius = top_diameter / 2;
 
-  plate_offset = -1/4 * top_radius;
+  plate_offset = -1 / 4 * top_radius;
 
   hi_truss_radius = hi_truss_height * (top_radius - base_radius) / alt_stand_height + base_radius;
   hi_truss_length = hi_truss_radius * sqrt(3);
@@ -114,12 +114,13 @@ module tripod(height, width, show) {
   th = base_width * sqrt(3) / 2;
 
   module my_thread(diameter, pitch, length) {
-    if (show_part)
+    if (show_part) {
       translate([0, 0, length / 2])
         threaded_rod(d = diameter + thread_ajsument, height = length, pitch = pitch, $fa = 0.5, $fs = 0.5, internal = true);
-    else
+    } else {
       translate([0, 0, -1])
         cylinder(length + 1, diameter / 2, diameter / 2);
+    }
   }
 
   module leg(show_length = false) {
@@ -136,14 +137,15 @@ module tripod(height, width, show) {
         difference() {
           union() {
             // Leg
-            translate([0, 0, hi_taper_line])
+            translate([0, 0, hi_taper_line]) {
               cylinder(leg_length - hi_taper_line - taper_length - sphere_diameter / 2, leg_odiam / 2, leg_odiam / 2);
-
-              // Top taper
-            translate([0, 0, leg_length - taper_length - sphere_diameter / 2])
+            }
+            // Top taper
+            translate([0, 0, leg_length - taper_length - sphere_diameter / 2]) {
               cylinder(taper_length, leg_odiam / 2, spike_diam / 2 * 1.5);
+            }
 
-              // Bottom taper
+            // Bottom taper
             translate([0, 0, spike_length]) {
               difference() {
                 cylinder(taper_length, spike_diam / 2 * 1.5, leg_odiam / 2);
@@ -153,25 +155,27 @@ module tripod(height, width, show) {
           }
 
           // Make a place for sphere to rest
-          translate([0, 0, leg_length - sphere_diameter / 2])
+          translate([0, 0, leg_length - sphere_diameter / 2]) {
             sphere(d = sphere_diameter);
+          }
 
-            // Expose inner tube
-          if (show_inner || show_part)
+          // Expose inner tube
+          if (show_inner || show_part) {
             translate([0, 0, truss_odiam + low_truss_height])
               difference() {
                 cylinder(leg_tube_length, leg_odiam / 2 + 1, leg_odiam / 2 + 1);
                 cylinder(leg_tube_length, leg_idiam / 2, leg_idiam / 2);
               }
+          }
         }
-        if (!show_inner && !show_part)
+        if (!show_inner && !show_part) {
           translate([0, 0, truss_odiam + low_truss_height])
             color("grey")
               cylinder(leg_tube_length, leg_odiam / 2 + 0.1, leg_odiam / 2 + 0.1);
+        }
 
-
-              // Spike
-        if (show_spike && !show_part)
+        // Spike
+        if (show_spike && !show_part) {
           color("grey") {
             translate([0, 0, 0])
               cylinder(spike_length, 0, spike_diam / 2);
@@ -179,9 +183,8 @@ module tripod(height, width, show) {
             translate([0, 0, leg_length - sphere_diameter / 2])
               sphere(d = sphere_diameter);
           }
-
+        }
       }
-
     }
   }
 
@@ -195,25 +198,27 @@ module tripod(height, width, show) {
       // The truss
       difference() {
         cylinder(truss_length, truss_odiam / 2, truss_odiam / 2);
-        if (show_inner || show_part)
-          translate([0, 0, (truss_length - truss_tube_length) / 2])
+        if (show_inner || show_part) {
+          translate([0, 0, (truss_length - truss_tube_length) / 2]) {
             difference() {
               cylinder(truss_tube_length, truss_odiam / 2 + 0.1, truss_odiam / 2 + 0.1);
               cylinder(truss_tube_length, truss_idiam / 2, truss_idiam / 2);
             }
+          }
+        }
       }
     }
 
-    if (!show_inner && !show_part)
+    if (!show_inner && !show_part) {
       translate([0, 0, (truss_length - truss_tube_length) / 2])
         color("grey")
           cylinder(truss_tube_length, truss_odiam / 2 + 0.1, truss_odiam / 2 + 0.1);
-
+    }
   }
 
   module hi_truss() {
     // Trusses in T arrengment
-    translate([base_diamater / 2, 0, 0])
+    translate([base_diamater / 2, 0, 0]) {
       rotate([0, 0, 60])
         translate([-hi_truss_length / (2 * sqrt(3)), 0, hi_truss_height])
           union() {
@@ -223,13 +228,13 @@ module tripod(height, width, show) {
             rotate([0, 90, 0])
               cylinder(3 / 2 * hi_truss_radius, truss_odiam / 2, truss_odiam / 2);
           }
-
-          // Tube to connect to top plate
+    }
+    // Tube to connect to top plate
     translate([base_radius, 0, hi_truss_height])
       rotate([0, 0, 60])
         translate([-plate_offset, 0, 0]) {
           difference() {
-            alt_len = alt_stand_height - hi_truss_height - 1/16 * INCH;
+            alt_len = alt_stand_height - hi_truss_height - 1 / 16 * INCH;
             cylinder(alt_len, truss_odiam / 3, truss_odiam / 3);
             my_thread(diameter = plate_screw_diam, pitch = plate_screw_pitch, length = alt_len);
           }
@@ -283,14 +288,15 @@ module tripod(height, width, show) {
         union() {
           // Legs
           leg(show_length = true);
-          translate([th, -base_width / 2, 0])
+          translate([th, -base_width / 2, 0]) {
             rotate([0, 0, 120])
               leg();
-          translate([th, base_width / 2, 0])
+          }
+          translate([th, base_width / 2, 0]) {
             rotate([0, 0, 240])
               leg();
-
-              // Trusses
+          }
+          // Trusses
           hi_truss();
           low_truss();
 
@@ -334,39 +340,41 @@ module tripod(height, width, show) {
               cube([plate_depth, plate_width, plate_height], center = true);
 
               // plate screw
-              translate([0, 0, 0])
+              translate([0, 0, 0]) {
                 screw_hole("1/4-20", "flat", length = plate_height);
+              }
 
-                // speaker screws
-              translate([-speaker_hole_depth / 2, -speaker_hole_width / 2, 0])
+              // speaker screws
+              translate([-speaker_hole_depth / 2, -speaker_hole_width / 2, 0]) {
                 for(x = [0, speaker_hole_depth])
                   for(y = [0, speaker_hole_width])
                     translate([x, y, 0])
                       rotate([0, 180, 0])
                         screw_hole("M8", "socket", length = plate_height);
+              }
 
-                        // bevel the corners
+              // bevel the corners
               for(rot = [0, 180])
                 rotate([0, 0, rot])
                   translate([0, plate_width / 2 + 9, 0]) {
                     rotate([-plate_angle, 0, 0])
                       cube([plate_depth, plate_height, 2 * plate_height], center = true);
                   }
-              for(rot = [90, 270])
+              for(rot = [90, 270]) {
                 rotate([0, 0, rot])
                   translate([0, plate_depth / 2 + 9, 0]) {
                     rotate([-plate_angle, 0, 0])
                       cube([plate_width, plate_height, 2 * plate_height], center = true);
                   }
+              }
 
-
-                  // Make a place for balls to rest on
-              translate([-plate_offset, 0, 0])
+              // Make a place for balls to rest on
+              translate([-plate_offset, 0, 0]) {
                 for(rot = [60, 180, 300])
                   rotate([0, 0, rot])
                     translate([top_radius + 2, 0, -0.5])
                       sphere(d = sphere_diameter);
-
+              }
             }
 
   if (show_speaker && !show_part) {
@@ -393,14 +401,13 @@ module tripod(height, width, show) {
 module speaker_tripod(height = default_height, width = default_width, show = default_show) {
   if (show == "hero") {
     for(h = [21, 25, 29]) {
-      translate([(29-h) * INCH * 3.8, 0, 0])
+      translate([(29 - h) * INCH * 3.8, 0, 0])
         tripod(h * INCH, width, "all");
     }
   } else {
-
     tripod(height, width, show);
   }
 }
 
-rotate([0,0,30])
+rotate([0, 0, 30])
   speaker_tripod();
