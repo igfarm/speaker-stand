@@ -24,7 +24,7 @@ include <BOSL2/screws.scad>
 
 default_height = 29 * INCH;
 default_width = 13 * INCH;
-default_show = "hero";
+default_show = "all";
 
 module tripod(height, width, show) {
 
