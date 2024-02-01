@@ -40,10 +40,8 @@ module tripod(height, width, show) {
   //top_diameter = plate_width / sqrt(3) * 2 - leg_odiam * 1.8;
   top_diameter = 6 * INCH;
 
-  //
   // https://pvcfittingstore.com/pages/pvc-pipe-sizes-and-dimensions
-  // Set up for 1" schedule 40 PVC
-  leg_odiam = 1.325 * INCH;
+  leg_odiam = 1.325 * INCH; // Set up for 1" schedule 40 PVC
   leg_idiam = 1.03 * INCH;
 
   truss_odiam = leg_odiam;
@@ -63,7 +61,8 @@ module tripod(height, width, show) {
 
   speaker_hole_depth = 138;
   speaker_hole_width = 123;
-  speaker_hole_diam = 8.5;
+  speaker_hole_screw = "M8";
+  speaker_hole_screw_head = "socket";
 
   // Plate Screw
   plate_screw_diam = 1 / 4 * INCH;
@@ -234,7 +233,7 @@ module tripod(height, width, show) {
       rotate([0, 0, 60])
         translate([-plate_offset, 0, 0]) {
           difference() {
-            alt_len = alt_stand_height - hi_truss_height - 1 / 16 * INCH;
+            alt_len = alt_stand_height - hi_truss_height - 1 / 8 * INCH;
             cylinder(alt_len, truss_odiam / 3, truss_odiam / 3);
             my_thread(diameter = plate_screw_diam, pitch = plate_screw_pitch, length = alt_len);
           }
@@ -349,13 +348,17 @@ module tripod(height, width, show) {
                 screw_hole("1/4-20", "flat", length = plate_height);
               }
 
+
               // speaker screws
+              tinfo = screw_info(str(str(speaker_hole_screw,",", plate_height)), speaker_hole_screw_head);
               translate([-speaker_hole_depth / 2, -speaker_hole_width / 2, 0]) {
                 for(x = [0, speaker_hole_depth])
                   for(y = [0, speaker_hole_width])
                     translate([x, y, 0])
-                      rotate([0, 180, 0])
-                        screw_hole("M8", "socket", length = plate_height);
+                      rotate([0, 180, 0]) {
+                        translate([0,0,-struct_val(tinfo, "head_height")/2])
+                          screw_hole(str(speaker_hole_screw,",", plate_height), speaker_hole_screw_head);
+                      }
               }
 
               // bevel the corners

@@ -16,11 +16,32 @@ do
 
     # CMD="${OPENSCAD} -D 'default_height=${HEIGHT_MM}'";
     CMD="${OPENSCAD} -D default_height=${HEIGHT_MM}"
-
     
     # There are changes, generate files again
     $CMD -o $ODIR/tripod.stl \
         $INFILE 2> $ODIR/tube_sizes.txt
+
+cat <<EOT > $ODIR/README.md
+# ${HEIGHT}" Speaker Stand
+
+<img src="./tripod.png" width="400">
+
+## STL Files
+-   [Plate](./tripod-plate.stl)
+-   [Top Brace](./tripod-hi.stl)
+-   [Low Brace](./tripod-low.stl)
+-   [All Parts](./tripod.stl)
+-   [Test Print](./tripod-test.stl)
+
+## Tube Lengths (in mm)
+\`\`\`
+EOT
+grep ECHO $ODIR/tube_sizes.txt | sed 's/ECHO://' >> $ODIR/README.md
+cat <<EOT >> $ODIR/README.md
+\`\`\`
+EOT
+
+    rm -rf $ODIR/tube_sizes.txt
 
     $CMD -o $ODIR/tripod.png \
         $INFILE
@@ -33,7 +54,7 @@ do
         -D 'default_show="low"'  \
         $INFILE
 
-    $CMD -o $ODIR/tripod-platform.stl \
+    $CMD -o $ODIR/tripod-plate.stl \
         -D 'default_show="plate"'  \
         $INFILE
 
