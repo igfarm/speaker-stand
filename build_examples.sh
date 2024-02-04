@@ -47,11 +47,11 @@ EOT
         $INFILE
 
     $CMD -o $ODIR/tripod-hi.stl \
-        -D 'default_show="hi"'  \
+        -D 'default_show="top"'  \
         $INFILE 
 
     $CMD -o $ODIR/tripod-low.stl \
-        -D 'default_show="low"'  \
+        -D 'default_show="bottom"'  \
         $INFILE
 
     $CMD -o $ODIR/tripod-plate.stl \

@@ -307,7 +307,7 @@ module tripod(height, width, show) {
 
         // If we are just showing a part, hide things we don't want to dee
         if (show_part) {
-          if (part == "low") {
+          if (part == "bottom") {
             translate([-100, -400, low_truss_height + 2.5 * INCH])
               cube([800, 800, 1500]);
 
@@ -315,7 +315,7 @@ module tripod(height, width, show) {
               cube([800, 800, 200]);
           }
 
-          if (part == "hi") {
+          if (part == "top") {
             translate([-100, -400, -2.5 * INCH])
               cube([800, 800, hi_truss_height]);
           }

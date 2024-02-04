@@ -6,6 +6,8 @@ This is an OpenSCAD file for creating a tripod speaker stand using PVC pipe and 
 
 The top plate for the speaker is attached with a single 1/4"-20 screw. The bottom of the stand features threaded spikes.
 
+<img src="./assets/29-inch-tripod.png" width="400">
+
 ## OpenSCAD File
 
 The provided OpenSCAD file allows customization of various stand dimensions and features:
@@ -16,6 +18,7 @@ The provided OpenSCAD file allows customization of various stand dimensions and 
 - `plate_height`: Height of top plate.
 - `leg_odiam`: Outside diamater of leg PVC pipe.
 - `leg_idiam`: Inside diamater of leg PVC pipe.
+- `show_part`: Render the part to be printed. Values are `top`, `bottom`, `plate`, `all`, and `hero`.
 
 Adjust these and other parameters to tailor the stand to your requirements.
 
@@ -46,6 +49,10 @@ This is a sample list using vendors in the US.
 - Paint
 
 Please print the test article to make sure the PVC pipe pipe and threads fit. Adjust the source code as needed.
+
+## Construction Notes
+
+See the wiki at https://github.com/igfarm/speaker-stand/wiki
 
 ## 3D Printed Parts
 
