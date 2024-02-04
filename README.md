@@ -33,32 +33,45 @@ These parts are suitable for printing on a Prusa Mini printer with a 7"x7"x7" be
 
 ## Materials
 
+This is a sample list using vendors in the US.
+
 - 1" schedule 40 PVC pipe for legs and trusses
-- Speaker spikes with M6 thread ([Amazon Link](https://www.amazon.com/gp/product/B09K3H8FD9/))
+- Speaker spikes with M6 thread ([Amazon Link](https://www.amazon.com/gp/product/B09K3H8FD9/)) ([AliExpress Link](hhttps://www.aliexpress.us/item/3256804460518547.html))
+
+- 3/4" Steel balls ([Amazon Link](https://www.amazon.com/gp/product/B07D9SSKN8/))
 - 1/4"-20 bolt to connect top plate to stand
 - Epoxy to glue connectors to tubes
 - 3D printed parts
 - Sand to fill the legs
+- Paint
+
+Please print the test article to make sure the PVC pipe pipe and threads fit. Adjust the source code as needed.
 
 ## 3D Printed Parts
 
-### Plate
+### Plate (optional)
+
+This is probably done better with MDF or plywoood.
 
 <img src="./assets/platform.png" width="400">
 
 ### Top Connector
 
-<img src="./assets/part2.png" width="400">
+<img src="./assets/part-hi.png" width="400">
 
 ### Bottom Connector
 
-<img src="./assets/part1.png" width="400">
+<img src="./assets/part-low.png" width="400">
+
+### Test Article
+
+<img src="./assets/prototype2-test.png" width="400">
 
 ## Development
 
 ### Third Prototype
 
-Waiting for parts to print...
+<img src="./assets/prototype3.png" width="400">
 
 ### Second Prototype
 

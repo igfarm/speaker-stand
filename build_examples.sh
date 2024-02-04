@@ -3,7 +3,7 @@ OPENSCAD="/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD --enable=manifold"
 
 # Generate stands
 INFILE=./tripod.scad
-for HEIGHT in 29
+for HEIGHT in 29 25 21
 do
     echo "Processing ${HEIGHT}"
     HEIGHT_MM=`bc -l <<< $HEIGHT*25.4`
