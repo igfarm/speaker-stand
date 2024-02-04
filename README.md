@@ -28,11 +28,25 @@ Additional display options include toggling the visibility of the spikes, top pl
 
 ## Generating 3D Printed Parts using SCAD File
 
+I would recommend the following process:
+
+1. Get a sample PVC pipe you will be using and measure the inner and outer diameter of the pipe
+1. Check the screw and spike threads types
+1. Decide height of the stand
+1. Adjust model with all information above
+1. Print the test article
+1. Print other parts
+
 To create printable 3D parts using the SCAD file:
 
 - `default_show`: part to show, values are "all", "hi", "low", "plate", and "test"
 
-These parts are suitable for printing on a Prusa Mini printer with a 7"x7"x7" bed.
+These parts are suitable for printing on a Prusa Mini printer with a 7"x7"x7" bed using the
+standard geometry.
+
+## Construction Notes
+
+See the wiki at https://github.com/igfarm/speaker-stand/wiki
 
 ## Materials
 
@@ -50,17 +64,19 @@ This is a sample list using vendors in the US.
 
 Please print the test article to make sure the PVC pipe pipe and threads fit. Adjust the source code as needed.
 
-## Construction Notes
-
-See the wiki at https://github.com/igfarm/speaker-stand/wiki
-
 ## 3D Printed Parts
 
-### Plate (optional)
+I created some examples renders based on standard height and PVC pipe from Home Depot.
 
-This is probably done better with MDF or plywoood.
+- [21" Height](./examples/1-inch-charlotte-pipe/21-inch/)
+- [25" Height](./examples/1-inch-charlotte-pipe/25-inch/)
+- [29" Height](./examples/1-inch-charlotte-pipe/29-inch/)
 
-<img src="./assets/platform.png" width="400">
+### Test Article
+
+This part is used to verify your model settings are correct to fit the pipe and other parts you use. Recommeded to print this before the other parts.
+
+<img src="./assets/prototype2-test.png" width="400">
 
 ### Top Connector
 
@@ -70,9 +86,11 @@ This is probably done better with MDF or plywoood.
 
 <img src="./assets/part-low.png" width="400">
 
-### Test Article
+### Plate (optional)
 
-<img src="./assets/prototype2-test.png" width="400">
+This is probably done better with MDF or plywoood.
+
+<img src="./assets/platform.png" width="400">
 
 ## Development
 
