@@ -44,7 +44,7 @@ module _stand(height, width, show) {
   truss_odiam = leg_odiam;
   truss_idiam = leg_idiam;
 
-  top_diameter = plate_width / sqrt(3) * 2 - leg_odiam * 1.6;
+  top_diameter = plate_width / sqrt(3) * 2 - leg_odiam ;
   // top_diameter = 5.3 * INCH;
 
   taper_length = INCH / 2;
@@ -75,7 +75,7 @@ module _stand(height, width, show) {
   plate_screw_pitch = 1 / 20 * INCH;
 
   // Steel ball
-  sphere_diameter = 0.75 * INCH;
+  sphere_diameter = 0.5 * INCH;
 
   // Flags to show different things
   // Flags to show different things
@@ -83,7 +83,7 @@ module _stand(height, width, show) {
   part = show;// Values are hi, low, plate
 
   show_spike = true;
-  show_top = false;
+  show_top = true;
   show_inner = false;
   show_speaker = true;
 
@@ -99,7 +99,7 @@ module _stand(height, width, show) {
   alt_stand_height = stand_height - plate_height;
   top_radius = top_diameter / 2;
 
-  plate_offset = -1 / 4 * top_radius;
+  plate_offset = 0; // -1 / 4 * top_radius;
 
   base_diamater = base_width / sqrt(3) * 2;
   base_radius = base_diamater / 2;
@@ -107,7 +107,6 @@ module _stand(height, width, show) {
   // Oversize thread diamater adjusment.
   // This value works using Prusa Mini+ using PLA
   thread_adjusment = 0.3;
-
 
   module my_thread(diameter, pitch, length) {
     if (show_part) {
@@ -124,9 +123,8 @@ module _stand(height, width, show) {
     [ for(i = [0:len(A) - 1])A[i][j]]
   ];
 
- 
   //  Cylinder of radius r from P to Q
-  module cylinder_between_points(P, Q, r, taper = 0, irad = 0) {
+  module cylinder_between_points(P, Q, r, taper = 0, irad = 0, add_spike = false, use_cube = false) {
     v = Q - P;// vector from P to Q
     L = norm(v);// height of the cylnder = dist(P, Q)
     c = v / L;// unit vector: direction from P to Q
@@ -138,23 +136,47 @@ module _stand(height, width, show) {
     MT = [a, b, c, P];// the transformation matrix
     M = transpose(MT);// OpenSCAD wants vectors in columns, so we need to transpose
     multmatrix(M) {
-      length = L - taper;
       difference() {
-        cylinder(h = length, r = r);
-        if (irad > 0) {
-          tube_length = length - truss_idiam * 2 - INCH;
-          translate([0, 0, (length - tube_length) / 2]) {
-            difference() {
-              cylinder(h = tube_length, r = r + 0.1);
-              cylinder(h = tube_length, r = irad);
+        union() {
+          length = L - taper;
+          difference() {
+            if (use_cube) {
+              th = r * 2.5;
+              tw = r;
+              translate([-tw/2, -th/2, 0]) 
+                cube([tw, th, length]);
+            }
+            else
+              cylinder(h = length, r = r);
+
+            if (irad > 0) {
+              tube_length = length - truss_idiam * 2 - INCH;
+              translate([0, 0, (length - tube_length) / 2]) {
+                difference() {
+                  cylinder(h = tube_length, r = r + 0.1);
+                  cylinder(h = tube_length, r = irad);
+                }
+              }
             }
           }
-        }
-      }
 
-      if (taper > 0) {
-        translate([0, 0, L - taper]) {
-          cylinder(taper, r, spike_diam / 2 * 1.5);
+          if (taper > 0) {
+            translate([0, 0, L - taper]) {
+              cylinder(taper, r, spike_diam / 2 * 1.5);
+            }
+          }
+
+          if (add_spike && show_spike)
+          color("grey")
+            translate([0, 0, L])
+              cylinder(spike_length, spike_diam / 2, 0);
+        }
+
+        if (add_spike) {
+          sl = spike_thread_length * 1.5;
+          translate([0, 0, L - sl]) {
+            my_thread(diameter = spike_thread, pitch = spike_thread_pitch, length = sl);
+          }
         }
       }
     }
@@ -164,10 +186,10 @@ module _stand(height, width, show) {
   bottom_z = bottom_margin;
   bottom_rad = default_width / 2;
   top_z = height - top_margin - plate_height - sphere_diameter / 2;
-  cone_slope = (top_rad - bottom_rad)/(top_z - bottom_z);
+  cone_slope = (top_rad - bottom_rad) / (top_z - bottom_z);
   cone_height = -bottom_rad / cone_slope + bottom_z;
 
-  function cone_rad_at(height) = cone_slope * ( height - bottom_z) + bottom_rad;
+  function cone_rad_at(height) = cone_slope * (height - bottom_z) + bottom_rad;
 
   // get coordinate of three points around circle r at height z
   function tcords(r, z, angle = 60, offset = 0) = [
@@ -176,15 +198,15 @@ module _stand(height, width, show) {
     [-r * cos(angle) + offset, -r * sin(angle), z]
   ];
 
-   // get coordinate of three points around height z
-  function zcords(z, angle = 60, offset = 0) = tcords(cone_rad_at(z),z,angle, offset);
+  // get coordinate of three points around height z
+  function zcords(z, angle = 60, offset = 0) = tcords(cone_rad_at(z), z, angle, offset);
 
   t0 = zcords(bottom_z, bottom_angle);
   p0 = t0[0];
   p1 = t0[1];
   p2 = t0[2];
 
-  t1 =  zcords(spike_length);
+  t1 = zcords(spike_length);
   p0a = t1[0];
   p1a = t1[1];
   p2a = t1[2];
@@ -204,53 +226,53 @@ module _stand(height, width, show) {
   p8 = p7 + [0, 0, top_margin + sphere_diameter / 2 - INCH / 8];
 
   // Put speheres in the intersection points to fill in the gaps
-  for(p = [p0, p1, p2, p3, p4, p5]) {
-     translate(p) {
+  if (false){
+    for(p = [p0, p1, p2, p3, p4, p5]) {
+    translate(p) {
       sphere(r = leg_orad);
     }
   }
- 
+}
+
   // Draw the connecting tubes
-  difference() {
-    union() {
-      cylinder_between_points(p0, p1, truss_orad, irad = truss_irad);
-      cylinder_between_points(p1, p2, truss_orad, irad = truss_irad);
-      cylinder_between_points(p2, p0, truss_orad, irad = truss_irad);
+  union() {
+    difference() {
+      union() {
+        cylinder_between_points(p0, p1, truss_orad, irad = truss_irad);
+        cylinder_between_points(p1, p2, truss_orad, irad = truss_irad);
+        cylinder_between_points(p2, p0, truss_orad, irad = truss_irad);
 
-      cylinder_between_points(p0, p0a, leg_orad, taper_length);
-      cylinder_between_points(p1, p1a, leg_orad, taper_length);
-      cylinder_between_points(p2, p2a, leg_orad, taper_length);
+        cylinder_between_points(p0, p0a, leg_orad, taper_length, add_spike = true);
+        cylinder_between_points(p1, p1a, leg_orad, taper_length, add_spike = true);
+        cylinder_between_points(p2, p2a, leg_orad, taper_length, add_spike = true);
 
-      cylinder_between_points(p0, p3, leg_orad, irad = leg_irad);
-      cylinder_between_points(p1, p4, leg_orad, irad = leg_irad);
-      cylinder_between_points(p2, p5, leg_orad, irad = leg_irad);
+        cylinder_between_points(p0, p3, leg_orad, irad = leg_irad);
+        cylinder_between_points(p1, p4, leg_orad, irad = leg_irad);
+        cylinder_between_points(p2, p5, leg_orad, irad = leg_irad);
 
-      cylinder_between_points(p4, p5, truss_orad);
-      cylinder_between_points(p3, p6, truss_orad);
+        cylinder_between_points(p4, p5, truss_orad, use_cube = true);
+        cylinder_between_points(p3, p6, truss_orad, use_cube = true);
 
-      cylinder_between_points(p3, p3a, leg_orad, taper_length);
-      cylinder_between_points(p4, p4a, leg_orad, taper_length);
-      cylinder_between_points(p5, p5a, leg_orad, taper_length);
+        cylinder_between_points(p3, p3a, leg_orad, taper_length);
+        cylinder_between_points(p4, p4a, leg_orad, taper_length);
+        cylinder_between_points(p5, p5a, leg_orad, taper_length);
 
-      cylinder_between_points(p7, p8, truss_irad);
-    }
-
-    // Top screw
-    translate(p8) {
-      rotate([180, 0, 0]) {
-        my_thread(diameter = plate_screw_diam, pitch = plate_screw_pitch, length = INCH);
+        cylinder_between_points(p7, p8, truss_orad/2);
       }
-    }
-    // Spike screws
-    for(p = [p0a, p1a, p2a])
-      translate(p) {
-        my_thread(diameter = spike_thread, pitch = spike_thread_pitch, length = spike_thread_length * 1.5);
+
+      // Top screw
+      translate(p8) {
+        rotate([180, 0, 0]) {
+          my_thread(diameter = plate_screw_diam, pitch = plate_screw_pitch, length = INCH);
+        }
       }
-    // Spheres
-    for(p = [p3a, p4a, p5a]) {
-      translate(p) {
-        color("grey")
-          sphere(d = sphere_diameter);
+
+      // Make a nest for the spheres
+      for(p = [p3a, p4a, p5a]) {
+        translate(p) {
+          color("grey")
+            sphere(d = sphere_diameter);
+        }
       }
     }
   }
@@ -263,39 +285,27 @@ module _stand(height, width, show) {
           sphere(d = sphere_diameter);
       }
     }
-    for(p = [p0a, p1a, p2a]) {
+    if (false) for(p = [p0a, p1a, p2a]) {
       translate(p) {
         color("grey")
-          translate([0,0,-spike_length])
-          cylinder(spike_length, 0, spike_diam / 2);
+          translate([0, 0, -spike_length])
+            cylinder(spike_length, 0, spike_diam / 2);
       }
     }
   }
 
-  if ((show_top && !show_part) || (show_part && part == "plate"))
-    color("grey")
+  if ((show_top && !show_part) || (show_part && part == "plate")) {
+    color("grey") {
       difference() {
-        translate([0, 0, alt_stand_height + plate_height / 2])
-          rotate([0, 0, 240])
-            translate([INCH / 2, 0, 0])
+        translate([p7[0], 0, alt_stand_height + plate_height / 2])
+          rotate([0, 0, 180])
+            translate([0, 0, 0])
               difference() {
                 cube([plate_depth, plate_width, plate_height], center = true);
 
                 // plate screw
                 translate([0, 0, 0]) {
                   screw_hole("1/4-20", "flat", length = plate_height);
-                }
-
-                // speaker screws
-                tinfo = screw_info(str(str(speaker_hole_screw, ",", plate_height)), speaker_hole_screw_head);
-                translate([-speaker_hole_depth / 2, -speaker_hole_width / 2, 0]) {
-                  for(x = [0, speaker_hole_depth])
-                    for(y = [0, speaker_hole_width])
-                      translate([x, y, 0])
-                        rotate([0, 180, 0]) {
-                          translate([0, 0, -struct_val(tinfo, "head_height") / 2])
-                            screw_hole(str(speaker_hole_screw, ",", plate_height), speaker_hole_screw_head);
-                        }
                 }
 
                 // bevel the corners
@@ -313,11 +323,9 @@ module _stand(height, width, show) {
                     }
                 }
               }
-
-
       }
-
-
+    }
+  }
 }
 
 module _tripod(height, width, show) {
@@ -332,7 +340,20 @@ module speaker_tripod(height = default_height, width = default_width, show = def
         _tripod(h * INCH, width, "all");
     }
   } else {
-    _tripod(height, width, show);
+    difference() {
+      _tripod(height, width, show);
+      if (show == "top") {
+        cylinder(r = width, h = height - 150);
+      }
+      if (show == "bottom") {
+        translate([-width / 2, -(width + 10) / 2, 0]) {
+          cube([width - 60, width + 10, height]);
+        }
+        translate([-width / 2, -width / 2, 160]) {
+          cube([width * 2, width * 2, height]);
+        }
+      }
+    }
   }
 }
 
